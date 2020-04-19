@@ -2,8 +2,9 @@
 {
     using UnityEngine;
     using Dreamteck.Splines;
+	using System.Threading;
 
-    public static class Utilities
+	public static class Utilities
     {
         #region Point
         public static Vector2[] ProjectToXZPlane(this Vector3[] points3D)
@@ -144,6 +145,32 @@
             Debug.LogError("No Terrain was Hit!" + origin);
 
             return hit;
+        }
+        #endregion
+
+        #region Process
+        public static void ExecutePowerShellCommand(this string arguments, bool exit = true)
+        {
+            string psArguments = string.Empty;
+
+            if (!exit) psArguments += "-NoExit ";
+
+            psArguments += "-Command ";
+            psArguments += arguments;
+
+            "powershell.exe".ExecuteCommand(psArguments);
+        }
+
+        static void ExecuteCommand(this string fileName, string arguments)
+        {
+            var thread = new Thread(delegate () { Command(fileName, arguments); });
+            thread.Start();
+        }
+
+        static void Command(string fileName, string arguments)
+        {
+            var process = System.Diagnostics.Process.Start(fileName, arguments);
+            process.Close();
         }
         #endregion
     }
