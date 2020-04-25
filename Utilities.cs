@@ -149,27 +149,35 @@
         #endregion
 
         #region Process
-        public static void ExecutePowerShellCommand(this string arguments, bool exit = true)
+        public static void ExecutePowerShellCommand(this string arguments, bool wait = false)
         {
-            string psArguments = string.Empty;
+            Debug.Log(arguments);
 
-            if (!exit) psArguments += "-NoExit ";
+            var psArguments = "-Command " + arguments;
 
-            psArguments += "-Command ";
-            psArguments += arguments;
-
-            "powershell.exe".ExecuteCommand(psArguments);
+            if (wait)
+            {
+                ExecuteCommand("powershell.exe", arguments, wait);
+            }
+            else
+            {
+                "powershell.exe".ExecuteCommandThread(psArguments, wait);
+            }
         }
 
-        static void ExecuteCommand(this string fileName, string arguments)
+        static void ExecuteCommandThread(this string fileName, string arguments, bool wait = false)
         {
-            var thread = new Thread(delegate () { Command(fileName, arguments); });
+            var thread = new Thread(delegate () { ExecuteCommand(fileName, arguments, wait); });
             thread.Start();
         }
 
-        static void Command(string fileName, string arguments)
+        static void ExecuteCommand(string fileName, string arguments, bool wait = false)
         {
             var process = System.Diagnostics.Process.Start(fileName, arguments);
+            if (wait)
+            {
+                process.WaitForExit();
+            }
             process.Close();
         }
         #endregion
