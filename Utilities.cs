@@ -17,12 +17,21 @@
             return points;
         }
 
-        public static void ProjectToTerrain(ref Vector3[] points)
+        public static Vector3[] ProjectToTerrain(this Vector3[] points)
         {
             for (int p = 0; p < points.Length; p++)
             {
-                points[p].y = points[p].GetHitTerrainHeight();
+                points[p] = points[p].ProjectToTerrain();
             }
+
+            return points;
+        }
+
+        public static Vector3 ProjectToTerrain(this Vector3 point)
+        {
+            point.y = point.GetHitTerrainHeight();
+
+            return point;
         }
 
         public static SplineComputer GetCurve(this Vector3[] points, int curveSampleRate = 4, bool XZPlane = false)
@@ -134,7 +143,7 @@
 
             Ray ray = new Ray(origin, Vector3.down);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 100000))
+            if (Physics.Raycast(ray, out hit))
             {
                 if (hit.transform.GetComponent<Terrain>())
                 {
