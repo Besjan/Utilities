@@ -151,8 +151,6 @@
                 }
             }
 
-            Debug.LogError("No Terrain was Hit!" + origin);
-
             return hit;
         }
         #endregion
