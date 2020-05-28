@@ -3,6 +3,7 @@
     using UnityEngine;
     using Dreamteck.Splines;
 	using System.Threading;
+	using System.Diagnostics;
 
 	public static class Utilities
     {
@@ -156,31 +157,35 @@
         #endregion
 
         #region Process
-        public static void ExecutePowerShellCommand(this string arguments, bool wait = false)
+        public static void ExecutePowerShellCommand(this string arguments, bool wait = false, bool admin = false)
         {
-            Debug.Log(arguments);
+            UnityEngine.Debug.Log(arguments);
 
             var psArguments = "-Command " + arguments;
 
             if (wait)
             {
-                ExecuteCommand("powershell.exe", arguments, wait);
+                ExecuteCommand("powershell.exe", psArguments, wait, admin);
             }
             else
             {
-                "powershell.exe".ExecuteCommandThread(psArguments, wait);
+                "powershell.exe".ExecuteCommandThread(psArguments, wait, admin);
             }
         }
 
-        static void ExecuteCommandThread(this string fileName, string arguments, bool wait = false)
+        static void ExecuteCommandThread(this string fileName, string arguments, bool wait = false, bool admin = false)
         {
-            var thread = new Thread(delegate () { ExecuteCommand(fileName, arguments, wait); });
+            var thread = new Thread(delegate () { ExecuteCommand(fileName, arguments, wait, admin); });
             thread.Start();
         }
 
-        static void ExecuteCommand(string fileName, string arguments, bool wait = false)
+        static void ExecuteCommand(string fileName, string arguments, bool wait = false, bool admin = false)
         {
-            var process = System.Diagnostics.Process.Start(fileName, arguments);
+            ProcessStartInfo startInfo = new ProcessStartInfo(fileName, arguments);
+            if (admin) startInfo.Verb = "runas";
+
+            var process = Process.Start(startInfo);
+
             if (wait)
             {
                 process.WaitForExit();
