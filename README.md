@@ -1,3 +1,5 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-greed.svg)](LICENSE)
+
 ## Features
 - Point utilities
 - Terrain utilities
