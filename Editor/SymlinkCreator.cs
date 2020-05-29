@@ -27,9 +27,9 @@
         [Button]
         public void CreateSymbolicLink()
         {
-            var linkDirectory = Path.Combine(ParentDirectory, Path.GetDirectoryName(RealDirectory));
+            var linkDirectory = Path.Combine(ParentDirectory, new DirectoryInfo(RealDirectory).Name);
 
-            var commandSymbolicLink = string.Format(@"New-Item -Path ""{0}"" -ItemType SymbolicLink -Value ""{1}""", ParentDirectory, linkDirectory);
+            var commandSymbolicLink = string.Format(@"New-Item -Path ""{0}"" -ItemType SymbolicLink -Value ""{1}""", linkDirectory, RealDirectory);
 
             commandSymbolicLink.ExecutePowerShellCommand(false, true);
         }
