@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: b81c496f99f6fc745b22284bebbbfdbd, type: 3}
   m_Name: SymlinkEditor
-  m_EditorClassIdentifier: Assembly-CSharp-Editor:Cuku.Utilities:SymlinkEditor
+  m_EditorClassIdentifier: 
   RealDirectory: {fileID: 11400000, guid: 933eaf7b9fdfd364da355f38db6fd199, type: 2}
   ParentDirectory: {fileID: 11400000, guid: 58da0142039f5464bbd4f5d79c822e60, type: 2}
