@@ -35,7 +35,7 @@
             return point;
         }
 
-        public static SplineComputer GetCurve(this Vector3[] points, int curveSampleRate = 4, bool XZPlane = false)
+        public static SplineComputer CreateCurve(this Vector3[] points, int curveSampleRate = 4, bool XZPlane = false)
         {
             SplinePoint[] splinePoints = new SplinePoint[points.Length];
             for (int i = 0; i < splinePoints.Length; i++)
