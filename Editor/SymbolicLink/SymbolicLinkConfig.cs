@@ -2,12 +2,10 @@
 {
 	using Cuku.ScriptableObject;
 	using Sirenix.OdinInspector;
-	using Sirenix.Utilities;
 	using System;
 
     [Serializable]
-	[GlobalConfig("Assets/Cuku/Utilities/SymbolicLink/Config/Data", UseAsset = true)]
-    public class SymbolicLinkConfig : GlobalConfig<SymbolicLinkConfig>
+    public class SymbolicLinkConfig : SerializedScriptableObject
     {
 		[InfoBox("Real directory for which the link will be created for, located outside Unity project.", InfoMessageType.None)]
 		[PropertySpace, InlineEditor]

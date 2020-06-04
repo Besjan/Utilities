@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 675f198bdc53f0241b2097a6fc8bd70f, type: 3}
-  m_Name: RealDirectoryPath
+  m_Script: {fileID: 11500000, guid: b81c496f99f6fc745b22284bebbbfdbd, type: 3}
+  m_Name: Packages_SymbolicLink
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,4 +21,5 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  Value: C:/Packages
+  RealDirectory: {fileID: 11400000, guid: 933eaf7b9fdfd364da355f38db6fd199, type: 2}
+  ParentDirectory: {fileID: 11400000, guid: 58da0142039f5464bbd4f5d79c822e60, type: 2}
