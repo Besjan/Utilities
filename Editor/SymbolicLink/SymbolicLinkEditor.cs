@@ -27,9 +27,9 @@
         [ShowIf("IsConfigValid"), PropertySpace(50), Button(ButtonSizes.Large)]
         public void CreateSymbolicLink()
         {
-            var linkDirectory = Path.Combine(Config.ParentDirectory.Value, new DirectoryInfo(Config.RealDirectory.Value).Name);
+            var linkDirectory = Path.Combine(Config.ParentDirectory, new DirectoryInfo(Config.RealDirectory).Name);
 
-            var commandSymbolicLink = string.Format(@"New-Item -Path ""{0}"" -ItemType SymbolicLink -Value ""{1}""", linkDirectory, Config.RealDirectory.Value);
+            var commandSymbolicLink = string.Format(@"New-Item -Path ""{0}"" -ItemType SymbolicLink -Value ""{1}""", linkDirectory, Config.RealDirectory);
 
             commandSymbolicLink.ExecutePowerShellCommand(false, true);
         }
