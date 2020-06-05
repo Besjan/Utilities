@@ -2,9 +2,7 @@
 {
 	using Cuku.ScriptableObject;
 	using Sirenix.OdinInspector;
-	using System;
 
-    [Serializable]
     public class SymbolicLinkConfig : SerializedScriptableObject
     {
 		[InfoBox("Real directory for which the link will be created for, located outside Unity project.", InfoMessageType.None)]
