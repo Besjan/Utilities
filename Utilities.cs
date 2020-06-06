@@ -4,6 +4,7 @@
     using Dreamteck.Splines;
 	using System.Threading;
 	using System.Diagnostics;
+	using System.IO;
 
 	public static class Utilities
     {
@@ -192,6 +193,13 @@
             }
             process.Close();
         }
-        #endregion
-    }
+		#endregion
+
+		#region Path
+        public static string GetPathInStreamingAssets(this string path)
+		{
+            return Path.Combine(Application.streamingAssetsPath, path);
+		}
+		#endregion
+	}
 }
