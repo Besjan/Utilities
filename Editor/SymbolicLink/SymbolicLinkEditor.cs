@@ -12,7 +12,7 @@
     {
         private static Vector2 windowSize = new Vector2(500, 280);
 
-        [MenuItem("Cuku/Utilities/Create Symbolik Link")]
+        [MenuItem("Cuku/Utilities/Symbolik Link Editor")]
         private static void OpenWindow()
         {
             var window = GetWindow<SymbolicLinkEditor>();
