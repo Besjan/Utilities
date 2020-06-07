@@ -5,6 +5,8 @@
 	using System.Threading;
 	using System.Diagnostics;
 	using System.IO;
+	using System.Collections.Generic;
+	using System.Linq;
 
 	public static class Utilities
     {
@@ -101,6 +103,75 @@
             }
             return inside;
         }
+ 
+        public static Vector3[] AddTileIntersectionPoints(this Vector3[] points)
+        {
+            var allPoints = new List<Vector3>();
+            var intersectionPointIds = new List<int>();
+            for (int i = 1; i < points.Length; i++)
+            {
+                var point1 = points[i - 1];
+                var point2 = points[i];
+
+                if (point1.GetHitTerrainName() != point2.GetHitTerrainName())
+                {
+                    var intersectionPoint = point1.GetTerrainTileIntersectionPoint(point2);
+                    allPoints.Add(intersectionPoint);
+                    intersectionPointIds.Add(allPoints.Count - 1);
+                }
+
+                allPoints.Add(point2);
+            }
+
+            // Shift points to match the start of a tile
+            var shiftedPoints = new Vector3[allPoints.Count + 1];
+            for (int i = 0; i < intersectionPointIds.Count; i++)
+            {
+                if (allPoints[intersectionPointIds[i]].GetHitTerrainName() == allPoints[intersectionPointIds[i + 1]].GetHitTerrainName()) continue;
+
+                var startId = intersectionPointIds[i + 1];
+
+                for (int j = startId; j < allPoints.Count; j++)
+                {
+                    shiftedPoints[j - startId] = allPoints[j];
+                }
+                for (int j = 0; j < startId; j++)
+                {
+                    shiftedPoints[(allPoints.Count - startId) + j] = allPoints[j];
+                }
+                shiftedPoints[shiftedPoints.Length - 1] = shiftedPoints[0];
+
+                break;
+            }
+
+            return shiftedPoints;
+        }
+
+        private static Vector3 GetTerrainTileIntersectionPoint(this Vector3 point1, Vector3 point2)
+        {
+            var terrainAnglePoints = point1.GetHitTerrain().GetTerrainAnglePoints();
+
+            var A1 = new Vector2(point1.x, point1.z);
+            var A2 = new Vector2(point2.x, point2.z);
+
+            bool found;
+            Vector2[] intersections = new Vector2[4];
+            intersections[0] = GetLinesIntersectionPoint(A1, A2, terrainAnglePoints[0], terrainAnglePoints[1], out found);
+            intersections[1] = GetLinesIntersectionPoint(A1, A2, terrainAnglePoints[0], terrainAnglePoints[2], out found);
+            intersections[2] = GetLinesIntersectionPoint(A1, A2, terrainAnglePoints[1], terrainAnglePoints[3], out found);
+            intersections[3] = GetLinesIntersectionPoint(A1, A2, terrainAnglePoints[2], terrainAnglePoints[3], out found);
+
+            var closest = 0;
+            for (int i = 1; i < intersections.Length; i++)
+            {
+                if (Vector3.Distance(A1, intersections[i]) < Vector3.Distance(A1, intersections[closest]))
+                {
+                    closest = i;
+                }
+            }
+
+            return intersections[closest].GetHitTerrainPosition();
+        }
         #endregion
 
         #region Terrain
@@ -155,6 +226,42 @@
 
             return hit;
         }
+
+        public static Dictionary<Terrain, Vector3[]> GetHitTerrainsAndBoundaryPoints(this Vector3[] boundaryPoints, int curveOffset)
+        {
+            Dictionary<Terrain, int[]> terrainLimitsIds = new Dictionary<Terrain, int[]>();
+            for (int i = 0; i < boundaryPoints.Length - 1; i++)
+            {
+                var terrain = boundaryPoints[i].GetHitTerrain();
+                if (!terrainLimitsIds.ContainsKey(terrain))
+                {
+                    terrainLimitsIds.Add(terrain, new int[] { i, i });
+                    continue;
+                };
+
+                var limits = terrainLimitsIds[terrain];
+                limits[0] = Mathf.Min(limits[0], i);
+                limits[1] = Mathf.Max(limits[1], i);
+
+                terrainLimitsIds[terrain] = limits;
+            }
+
+            Dictionary<Terrain, Vector3[]> terrains = new Dictionary<Terrain, Vector3[]>();
+            foreach (var terrain in terrainLimitsIds)
+            {
+                var limits = terrain.Value;
+                var startId = limits[0] - curveOffset;
+                var endId = limits[1] + curveOffset;
+
+                var points = new List<Vector3>();
+                if (limits[0] == 0) points.AddRange(boundaryPoints.Skip(boundaryPoints.Count() - curveOffset));
+                points.AddRange(boundaryPoints.Skip(startId).Take(endId - startId));
+
+                terrains.Add(terrain.Key, points.ToArray());
+            }
+
+            return terrains;
+        }
         #endregion
 
         #region Process
@@ -174,13 +281,13 @@
             }
         }
 
-        static void ExecuteCommandThread(this string fileName, string arguments, bool wait = false, bool admin = false)
+        private static void ExecuteCommandThread(this string fileName, string arguments, bool wait = false, bool admin = false)
         {
             var thread = new Thread(delegate () { ExecuteCommand(fileName, arguments, wait, admin); });
             thread.Start();
         }
 
-        static void ExecuteCommand(string fileName, string arguments, bool wait = false, bool admin = false)
+        private static void ExecuteCommand(string fileName, string arguments, bool wait = false, bool admin = false)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo(fileName, arguments);
             if (admin) startInfo.Verb = "runas";
