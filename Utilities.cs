@@ -1,8 +1,10 @@
 ﻿namespace Cuku.Utilities
 {
     using UnityEngine;
+#if DREAMTECK_SPLINES
     using Dreamteck.Splines;
-	using System.Threading;
+#endif
+    using System.Threading;
 	using System.Diagnostics;
 	using System.IO;
 	using System.Collections.Generic;
@@ -10,7 +12,7 @@
 
 	public static class Utilities
     {
-        #region Point
+#region Point
         public static Vector2[] ProjectToXZPlane(this Vector3[] points3D)
         {
             var points = new Vector2[points3D.Length];
@@ -38,6 +40,7 @@
             return point;
         }
 
+#if DREAMTECK_SPLINES
         public static SplineComputer CreateCurve(this Vector3[] points, int curveSampleRate = 4, bool XZPlane = false)
         {
             SplinePoint[] splinePoints = new SplinePoint[points.Length];
@@ -56,6 +59,7 @@
 
             return curve;
         }
+#endif
 
         /// <summary>
         /// Gets the coordinates of the intersection point of two lines.
@@ -172,9 +176,9 @@
 
             return intersections[closest].GetHitTerrainPosition();
         }
-        #endregion
+#endregion
 
-        #region Terrain
+#region Terrain
         public static Terrain GetHitTerrain(this Vector3 position)
         {
             return position.GetTerrainRaycastHit().transform.GetComponent<Terrain>();
@@ -262,9 +266,9 @@
 
             return terrains;
         }
-        #endregion
+#endregion
 
-        #region Process
+#region Process
         public static void ExecutePowerShellCommand(this string arguments, bool wait = false, bool admin = false)
         {
             UnityEngine.Debug.Log(arguments);
@@ -300,13 +304,13 @@
             }
             process.Close();
         }
-		#endregion
+#endregion
 
-		#region Path
+#region Path
         public static string GetPathInStreamingAssets(this string path)
 		{
             return Path.Combine(Application.streamingAssetsPath, path);
 		}
-		#endregion
+#endregion
 	}
 }
